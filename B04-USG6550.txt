@@ -1,0 +1,365 @@
+<USG6500>dis cu 
+2018-07-06 17:50:10.890 
+!Software Version V500R001C30SPC100
+#
+sysname USG6500
+#
+ undo l2tp sendaccm enable
+ l2tp domain suffix-separator @
+#
+vlan batch 10 100 200 300
+#
+ ipsec sha2 compatible enable
+#
+ undo factory-configuration prohibit
+#
+undo telnet server enable
+undo telnet ipv6 server enable
+#
+clock timezone UTC add 00:00:00
+#
+ hrp configuration auto-check 1440
+#
+ firewall detect ftp
+#
+ firewall defend action discard
+#
+ log type traffic enable                  
+ log type syslog enable
+ log type policy enable
+#
+ undo dataflow enable
+#
+ sa force-detection enable
+#
+ lldp enable
+#
+ isp name "china mobile" set filename china-mobile.csv
+ isp name "china unicom" set filename china-unicom.csv
+ isp name "china telecom" set filename china-telecom.csv
+ isp name "china educationnet" set filename china-educationnet.csv
+#
+ user-manage web-authentication security port 8887
+password-policy
+ level high
+user-manage single-sign-on ad
+user-manage single-sign-on tsm
+user-manage single-sign-on radius
+user-manage sso-sync radius
+page-setting
+ user-manage security version tlsv1.1 tlsv1.2
+#                                         
+ firewall ids authentication type sha256
+#
+ snmp-agent session history-max-number enable
+#
+ web-manager security version tlsv1.1 tlsv1.2
+ web-manager enable
+ web-manager security enable
+#
+firewall dataplane to manageplane application-apperceive default-action drop
+#
+ update schedule ips-sdb daily 01:03
+ update schedule av-sdb daily 01:03
+ update schedule sa-sdb daily 01:03
+ update schedule ip-reputation daily 01:03
+ update schedule cnc daily 01:03
+#
+ set disk-scan parameter attach on
+ set disk-scan parameter cycle 15
+ set disk-scan parameter iostat 80
+ set disk-scan parameter speed 10
+ set disk-scan parameter switch on
+ set disk-scan parameter parallel 50
+#
+ip vpn-instance default                   
+ ipv4-family
+#
+ip address-set DMZ_ip type object
+ address 0 172.16.0.0 mask 24
+#
+ip address-set trust_ip type object
+ address 0 192.168.0.0 mask 24
+#
+ip address-set cloud_ip type object
+ address 0 10.0.0.0 mask 8
+#
+ip address-set 101.124.22.101_nat type object
+ address 0 101.124.22.101 mask 32
+#
+ time-range worktime
+  period-range 08:00:00 to 18:00:00 working-day
+#
+aaa
+ authentication-scheme default
+ authentication-scheme admin_local
+ authentication-scheme admin_radius_local
+ authentication-scheme admin_hwtacacs_local
+ authentication-scheme admin_ad_local
+ authentication-scheme admin_ldap_local   
+ authentication-scheme admin_radius
+ authentication-scheme admin_hwtacacs
+ authentication-scheme admin_ad
+ authentication-scheme admin_ldap
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+  service-type internetaccess ssl-vpn l2tp ike
+  internet-access mode password
+  reference user current-domain
+ manager-user audit-admin
+  password cipher @%@%K3@F~*6u:XV8%:"qkiT22BFurWV%!du[g8)&z--T:8%ABFx2@%@%
+  service-type web terminal
+  level 15
+
+ manager-user api-admin
+  password cipher @%@%$u`z'_kX-FikQj*P=s,K3-.]w&+)Ur:TB'EJAFOoo!;P-.`3@%@%
+  service-type api
+  level 15
+
+ manager-user admin
+  password cipher @%@%zo@`*nyNw3E[iXOt\LB9&j4AZOYB1}-v](MH;OW<Oh~Pj4D&@%@%
+  service-type web terminal ssh
+  level 15                                
+
+ role system-admin
+ role device-admin
+ role device-admin(monitor)
+ role audit-admin
+ bind manager-user admin role system-admin
+ bind manager-user audit-admin role audit-admin
+#
+interface Vlanif10
+ ip address 101.124.22.98 255.255.255.248
+#
+interface Vlanif100
+ ip address 172.16.0.1 255.255.255.0
+#
+interface Vlanif200
+ ip address 192.168.0.1 255.255.255.0
+#
+interface Vlanif300
+#
+l2tp-group default-lns
+#
+interface GigabitEthernet0/0/0
+ undo shutdown                            
+ ip binding vpn-instance default
+ ip address 10.3.127.24 255.255.255.0
+ lldp enable
+ lldp tlv-enable basic-tlv all
+ service-manage http permit
+ service-manage https permit
+ service-manage ping permit
+ service-manage ssh permit
+#
+interface GigabitEthernet1/0/0
+ portswitch
+ undo shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 10
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/1
+ portswitch
+ undo shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 100           
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/2
+ portswitch
+ undo shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 200
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/3
+ portswitch
+ undo shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 300
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/4
+ undo shutdown
+ lldp enable                              
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/5
+ undo shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/6
+ undo shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/7
+ undo shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/8
+ undo shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/9
+ undo shutdown                            
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/10
+ undo shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/11
+ undo shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface Virtual-if0
+#
+interface Cellular0/0/0
+#
+interface Cellular0/0/1
+#
+interface NULL0
+#
+firewall zone local
+ set priority 100
+#                                         
+firewall zone trust
+ set priority 85
+ add interface GigabitEthernet0/0/0
+ add interface GigabitEthernet1/0/2
+ add interface Vlanif200
+#
+firewall zone untrust
+ set priority 5
+ add interface GigabitEthernet1/0/0
+ add interface Vlanif10
+#
+firewall zone dmz
+ set priority 50
+ add interface GigabitEthernet1/0/1
+ add interface Vlanif100
+#
+firewall zone name cloud id 4
+ set priority 60
+ add interface GigabitEthernet1/0/3
+ add interface Vlanif300
+#
+ip route-static 0.0.0.0 0.0.0.0 101.124.22.97
+ip route-static vpn-instance default 0.0.0.0 0.0.0.0 10.3.127.1
+#                                         
+undo ssh server compatible-ssh1x enable
+stelnet server enable
+ssh authentication-type default password
+#
+ nat server nat1 0 global 101.124.22.101 inside 172.16.0.4
+#
+user-interface con 0
+ authentication-mode aaa
+user-interface vty 0 4
+ authentication-mode aaa
+ protocol inbound ssh
+user-interface vty 16 20
+#
+sa
+#
+location
+#
+ slb
+#
+multi-interface
+ mode proportion-of-weight
+#
+right-manager server-group
+#                                         
+agile-network
+#
+api
+#
+device-classification
+ device-group pc
+ device-group mobile-terminal
+ device-group undefined-group
+#
+security-policy
+ default action permit
+ rule name dmz_trust
+  source-zone dmz
+  destination-zone trust
+  source-address address-set DMZ_ip
+  destination-address address-set trust_ip
+  action permit
+ rule name dmz_cloud
+  source-zone dmz
+  destination-zone cloud
+  source-address address-set DMZ_ip
+  destination-address address-set cloud_ip
+  action permit
+ rule name trust_cloud                    
+  source-zone trust
+  destination-zone cloud
+  source-address address-set trust_ip
+  destination-address address-set cloud_ip
+  action permit
+ rule name cloud_trust
+  source-zone cloud
+  destination-zone trust
+  source-address address-set cloud_ip
+  destination-address address-set trust_ip
+  action permit
+ rule name nat
+  source-zone untrust
+  destination-address address-set 101.124.22.101_nat
+  action permit
+ rule name 172.16.0.5_untrust
+  source-zone dmz
+  destination-zone untrust
+  source-address 172.16.0.5 mask 255.255.255.255
+  action permit
+ rule name icmp
+  service icmp
+  action permit
+#                                         
+auth-policy
+#
+traffic-policy
+#
+policy-based-route
+#
+nat-policy
+ rule name 172.16.0.5
+  source-zone dmz
+  destination-zone untrust
+  source-address 172.16.0.5 mask 255.255.255.255
+  action nat easy-ip
+#
+proxy-policy
+#
+quota-policy
+#
+pcp-policy
+#
+dns-transparent-policy
+ mode based-on-multi-interface
+#
+rightm-policy
+#                                         
+ sms
+#
+return
