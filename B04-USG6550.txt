@@ -15,8 +15,7 @@ interface GigabitEthernet0/0/0
  service-manage ssh permit
 #
 interface GigabitEthernet1/0/0
- portswitch
- undo shutdown
+
  port link-type trunk
  undo port trunk allow-pass vlan 1
  port trunk allow-pass vlan 10
