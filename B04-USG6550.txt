@@ -2,3 +2,23 @@ aoaoao
 
 2018/7/9
 new file
+
+interface GigabitEthernet0/0/0
+ undo shutdown                            
+ ip binding vpn-instance default
+ ip address 10.3.127.24 255.255.255.0
+ lldp enable
+ lldp tlv-enable basic-tlv all
+ service-manage http permit
+ service-manage https permit
+ service-manage ping permit
+ service-manage ssh permit
+#
+interface GigabitEthernet1/0/0
+ portswitch
+ undo shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 10
+ lldp enable
+ lldp tlv-enable basic-tlv all
